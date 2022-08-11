@@ -35,7 +35,7 @@ public class GravityLayer : ModuleRules
 				"JsonUtilities",
 				"Sockets",
 				"Networking",
-				"VaRest"
+				"VaRest",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -47,7 +47,9 @@ public class GravityLayer : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore", 
+				"SlateCore",
+				
+				
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
@@ -59,5 +61,15 @@ public class GravityLayer : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
+		if (Target.Type == TargetRules.TargetType.Editor)
+		{
+			PublicDependencyModuleNames.AddRange(new string[]
+			{
+				"UnrealEd"
+			});
+
+		}
+
+
 	}
 }

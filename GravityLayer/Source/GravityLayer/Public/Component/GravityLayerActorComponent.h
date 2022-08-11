@@ -5,6 +5,10 @@
 #include "Components/ActorComponent.h"
 #include "glTFRuntimeFunctionLibrary.h"
 #include "WearableServiceEvents.h"
+
+#include <JsonUtilities.h>
+#include <Json.h>
+
 #include "GravityLayerActorComponent.generated.h"
 
 class UAnimBlueprint;

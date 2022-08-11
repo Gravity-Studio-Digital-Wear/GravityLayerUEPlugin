@@ -41,42 +41,63 @@ void UGravityLayer::Deinitialize()
 		GLMetaverseEntryPoint->RemoveFromRoot();
 	}
 		
-
 	GLMetaverseEntryPoint = nullptr;
 
 	if(SDKConf)
 		SDKConf.Reset();
 	SDKConf = nullptr;
+	RemoveFromRoot();
 }
 
 
 
 void UGravityLayer::Configure()
 {
+	//SDKConf->_secret = "4Hf573CnutWhOA3b4yo1H5Sh"	
+	//SDKConf->_secret = "ZrikRzDrFS9jyVX5UBoVLOdD"	 
+	//"https://dev.gravitylayer.io/api",
+
+	ConfigureWithParams("0xA770709C3dff8A43748A8FEa98ec1835E2b61883",
+		"https://dev.gravitylayer.io/api",
+		"ZrikRzDrFS9jyVX5UBoVLOdD");
+}
+
+void UGravityLayer::ConfigureWithParams(FString Account, FString ApiUrl, FString Secret)
+{
+	ConfigureSDK(Account,ApiUrl,Secret);
+	CreateMetaverseEntyPoint();
+}
+
+void UGravityLayer::ConfigureSDK(FString Account, FString ApiUrl, FString Secret)
+{
 	// SDK Configuration for metaverse end point;
 	// TODO: take this configuration to an xml file and lood it at gl module.
-	if (!SDKConf) 
+	
+	if (!SDKConf)
 	{
 		SDKConf = MakeShared<FSdkConfiguration, ESPMode::ThreadSafe>();
-		SDKConf->Account = "0x39b7d171e693b3e6270c40899e46c90016e3bd71";
-		SDKConf->_apiUrl = "https://gravity-dev.easychain.dev/api";
-		//SDKConf->_secret = "4Hf573CnutWhOA3b4yo1H5Sh";
-		SDKConf->_secret = "ZrikRzDrFS9jyVX5UBoVLOdD";
-		
 	}
+	SDKConf->_account = Account;
+	SDKConf->_apiUrl = ApiUrl;
+	SDKConf->_secret = Secret;
+	
+}
+
+void UGravityLayer::CreateMetaverseEntyPoint()
+{
 	// Metaverse enty point setup
 	// Entry point events are registered here.
-	if (!GLMetaverseEntryPoint) 
+	if (!GLMetaverseEntryPoint)
 	{
 		GLMetaverseEntryPoint = NewObject<UMetaverseEntryPoint>();
-		GLMetaverseEntryPoint->AddToRoot();
-		GLMetaverseEntryPoint->SetMetaverseEntryPoint(SDKConf->_apiUrl, SDKConf->_secret);
-
-		GLMetaverseEntryPoint->GetStock()->OnStockUpdated.AddDynamic(this, &UGravityLayer::OnStockUpdate);
-		GLMetaverseEntryPoint->GetWardrobe()->OnWardrobeUpdated.AddDynamic(this, &UGravityLayer::OnWardrobeUpdate);
-		GLMetaverseEntryPoint->GetWardrobeServices()->OnWearableMetadataUpdate.AddDynamic(this, &UGravityLayer::OnWearableServiceUpdate);
+		GLMetaverseEntryPoint->AddToRoot();	
 	}
-	
+
+	GLMetaverseEntryPoint->SetMetaverseEntryPoint(SDKConf->_apiUrl, SDKConf->_secret);
+
+	GLMetaverseEntryPoint->GetStock()->OnStockUpdated.AddUniqueDynamic(this, &UGravityLayer::OnStockUpdate);
+	GLMetaverseEntryPoint->GetWardrobe()->OnWardrobeUpdated.AddUniqueDynamic(this, &UGravityLayer::OnWardrobeUpdate);
+	GLMetaverseEntryPoint->GetWardrobeServices()->OnWearableMetadataUpdate.AddUniqueDynamic(this, &UGravityLayer::OnWearableServiceUpdate);
 }
 
 bool UGravityLayer::IsInitialized()
@@ -87,8 +108,9 @@ bool UGravityLayer::IsInitialized()
 void UGravityLayer::ConsoleTest()
 {
 	GetAllInteroperableWearables();
-	GetUserInteroperableWearables( SDKConf->Account);
+	GetUserInteroperableWearables( SDKConf->_account);
 	GetNFTModel("0x2953399124f0cbb46d2cbacd8a89cf0599974963", "75437324160650951662245703982020702172073797313123328702383515790577235918948");
+	//GetNFTModel("0x2953399124F0cBB46d2CbACD8A89cF0599974963", "75437324160650951662245703982020702172073797313123328702383515791676747546724");
 }
 
 void UGravityLayer::GetAllInteroperableWearables()
@@ -96,9 +118,9 @@ void UGravityLayer::GetAllInteroperableWearables()
 	GLMetaverseEntryPoint->GetStock()->FetchAllInteroperableWearables();
 }
 
-void UGravityLayer::GetUserInteroperableWearables( const FString& Account)
+void UGravityLayer::GetUserInteroperableWearables( const FString& _account)
 {
-	GLMetaverseEntryPoint->GetWardrobe()->FetchInteroperableWearables(Account);
+	GLMetaverseEntryPoint->GetWardrobe()->FetchInteroperableWearables(_account);
 }
 
 void UGravityLayer::GetNFTModel(const FString& contractAddress, const FString& tokenId)
@@ -147,7 +169,6 @@ void UGravityLayer::OnWearableServiceUpdate(TArray<UGLMetadata*> WearableMetadat
 	}
 }
 
-
 TArray<UGLMetadata*> UGravityLayer::GetNTFModelData(FString NFTData)
 {
 	return GLMetaverseEntryPoint->GetWardrobeServices()->GetAllInteroperableWearablesFromData(NFTData);
@@ -163,9 +184,7 @@ FglTFRuntimeSkeletalMeshConfig UGravityLayer::GetglTFRuntimeSkeletalMeshConfig(F
 	{
 		skeletonMeshConfig.Skeleton = skeleton;
 	}
-
 	return skeletonMeshConfig;
-
 }
 
 FglTFRuntimeSkeletonConfig UGravityLayer::GetglTFRuntimeSkeletonConfig(const FString& rootBoneName, USkeleton* skeleton)
@@ -181,7 +200,6 @@ FglTFRuntimeMaterialsConfig UGravityLayer::GetglTFRuntimeMaterialsConfig()
 {
 	FglTFRuntimeMaterialsConfig glTFRuntimeMaterialsConfig;
 	glTFRuntimeMaterialsConfig.bMergeSectionsByMaterial = true;
-
 	return glTFRuntimeMaterialsConfig;
 }
 
@@ -189,7 +207,6 @@ FglTFRuntimeConfig UGravityLayer::GetglTFRuntimeConfig()
 {
 	FglTFRuntimeConfig runtimeConfig;
 	runtimeConfig.TransformBaseType = EglTFRuntimeTransformBaseType::YForward;
-
 	return runtimeConfig;
 }
 
@@ -212,4 +229,31 @@ USkeletalMeshComponent* UGravityLayer::AddSkeletalMeshComponent(AActor* targetAc
 	skeletalMeshComponent->RegisterComponent();
 
 	return skeletalMeshComponent;
+}
+
+FString UGravityLayer::GetAccountId()
+{
+	if (SDKConf)
+		return SDKConf->_account;
+
+	return FString();
+}
+
+FString UGravityLayer::GetApiUrl()
+{
+	if (SDKConf)
+		return SDKConf->_apiUrl;
+	return FString();
+}
+
+FString UGravityLayer::GetSecret()
+{
+	if (SDKConf)
+		return SDKConf->_secret;
+	return FString();
+}
+
+UMetaverseEntryPoint* UGravityLayer::GetMetaverseEntryPoint()
+{
+	return GLMetaverseEntryPoint;
 }

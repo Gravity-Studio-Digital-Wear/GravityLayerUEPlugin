@@ -12,7 +12,7 @@
 void UWardrobeByUser::SetWardrobeByUser(IFetchWearablesByAddress* APIWrapper)
 {
 	_APIWrapper = APIWrapper;
-	_APIWrapper->GetOnNFTsByAddress()->AddDynamic(this, &UWardrobeByUser::FillWardrobeFromJsonString);
+	_APIWrapper->GetOnNFTsByAddress()->AddUniqueDynamic(this, &UWardrobeByUser::FillWardrobeFromJsonString);
 }
 
 UWardrobeByUser::UWardrobeByUser()
@@ -31,7 +31,6 @@ void UWardrobeByUser::FetchInteroperableWearables(FString address)
 
 void UWardrobeByUser::FillWardrobeFromJsonString(FString jsonString)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("UWardrobeByUser::FillWardrobeFromJsonString: %s"), *jsonString);
 	Wearables.Empty();
 
 	FWardrobeResult wResult;
@@ -52,6 +51,26 @@ void UWardrobeByUser::FillWardrobeFromJsonString(FString jsonString)
 		}
 	}
 	OnWardrobeUpdated.Broadcast();
+}
+
+void UWardrobeByUser::Add(UWearable* const wearable)
+{
+	Wearables.Add(wearable);
+}
+
+void UWardrobeByUser::Remove(UWearable* const wearable)
+{
+	Wearables.Remove(wearable);
+}
+
+bool UWardrobeByUser::Contains(UWearable* const wearable)
+{
+	return Wearables.Contains(wearable);
+}
+
+int32_t UWardrobeByUser::lenght()
+{
+	return Wearables.Num();
 }
 
 TArray<UWearable*>* UWardrobeByUser::GetWearables()

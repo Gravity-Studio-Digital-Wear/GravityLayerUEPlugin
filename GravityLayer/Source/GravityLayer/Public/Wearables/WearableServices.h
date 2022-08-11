@@ -18,6 +18,7 @@ public:
 	UWearableServices();
 
 	void SetWearableServices(UMetaverseAPIWrapper* wrapper);
+	UMetaverseAPIWrapper* GetMetaverse();
 
 	void GetWearableMetadata(FString contractId, FString tokenId, FString filter = "");
 

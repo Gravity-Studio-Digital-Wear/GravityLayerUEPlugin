@@ -17,7 +17,10 @@ private:
 
 public:
 	UWearableBase();
+
 	void SetWearableBase(FString title, FString modelUrl);
+	void SetWearableBase(FString title, FString modelUrl, FString metaverseId);
+	
 	virtual ~UWearableBase() ;
 
 	UFUNCTION(BlueprintCallable, Category = "Gravity Layer|Event")
@@ -27,7 +30,12 @@ public:
 	virtual UTexture2D* GetPreviewImage() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Gravity Layer|Event")
+	virtual FString GetMetaverseId() ;
+
+	UFUNCTION(BlueprintCallable, Category = "Gravity Layer|Event")
 	virtual FString GetModelUrl() override;
+
+	virtual void SetPreviewImage(UTexture2D* image);
 
 	UFUNCTION(BlueprintCallable, Category = "Gravity Layer|Event")
 	void DownloadPreviewImage(FString url);

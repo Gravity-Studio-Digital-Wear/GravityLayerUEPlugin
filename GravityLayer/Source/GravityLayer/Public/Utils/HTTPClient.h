@@ -16,10 +16,21 @@
 
 #include "HTTPClient.generated.h"
 
+UCLASS(Abstract)
+class UAHTTPCLient : public UEngineSubsystem
+{
+    GENERATED_BODY()
+public :
+    virtual void CallURL(const FString& URL, const FString& jwt, const FString& secret, FVaRestCallDelegate& Callback) {};
+    virtual void CallImageURL(const FString& URL, FVaRestCallDelegate& Callback) {};
+    virtual TMap<FString, FString> CreateHeaderParameters(const FString& jwt, const FString& secret) {
+        return  TMap<FString, FString>();
+    };
 
+};
 
 UCLASS()
-class UHTTPClient : public UEngineSubsystem
+class UHTTPClient : public UAHTTPCLient
 {
     GENERATED_BODY()
 public:
@@ -30,6 +41,8 @@ public:
 	
 public:
     
-    void CallURL(const FString& URL, const FString& jwt, const FString& secret, FVaRestCallDelegate& Callback);
-    void CallImageURL(const FString& URL, FVaRestCallDelegate& Callback);
+    void CallURL(const FString& URL, const FString& jwt, const FString& secret, FVaRestCallDelegate& Callback) override ;
+    void CallImageURL(const FString& URL, FVaRestCallDelegate& Callback) override;
+    TMap<FString, FString> CreateHeaderParameters(const FString& jwt, const FString& secret) override ;
+
 };

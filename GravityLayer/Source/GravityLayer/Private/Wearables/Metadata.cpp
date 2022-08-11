@@ -40,5 +40,6 @@ void UGLMetadata::OnGetImageResponseReceived(UVaRestRequestJSON* restRequest)
 {
 	OnImageDownloadedResponse.RemoveDynamic(this, &UGLMetadata::OnGetImageResponseReceived);
 	TArray<uint8> ImageData = restRequest->GetResponseContent();
-	PreviewImage = FImageUtils::ImportBufferAsTexture2D(ImageData);
+	if(ImageData.Num()>0)
+		PreviewImage = FImageUtils::ImportBufferAsTexture2D(ImageData);
 }

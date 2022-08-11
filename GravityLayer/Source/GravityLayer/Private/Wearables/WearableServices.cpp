@@ -12,7 +12,12 @@
 void UWearableServices::SetWearableServices(UMetaverseAPIWrapper* wrapper)
 {
 	_metaverseAPIWrapper = wrapper;
-	_metaverseAPIWrapper->OnGetModelMetadataByNft.AddDynamic(this, &UWearableServices::GetAllInteroperableWearables);
+	_metaverseAPIWrapper->OnGetModelMetadataByNft.AddUniqueDynamic(this, &UWearableServices::GetAllInteroperableWearables);
+}
+
+UMetaverseAPIWrapper* UWearableServices::GetMetaverse()
+{
+    return _metaverseAPIWrapper;
 }
 
 UWearableServices::UWearableServices()

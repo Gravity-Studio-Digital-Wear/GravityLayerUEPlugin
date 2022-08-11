@@ -83,6 +83,16 @@ FGetNFTResponseDataAsyncDelegate* UMetaverseAPIWrapper::GetOnNFTsByAddress()
     return 	&OnNFTsByAddress;
 }
 
+FString UMetaverseAPIWrapper::GetApiUrl()
+{
+    return _apiUrl;
+}
+
+FString UMetaverseAPIWrapper::GetSecret()
+{
+    return _secret;
+}
+
 UMetaverseAPIWrapper::UMetaverseAPIWrapper()
 {
    
@@ -101,7 +111,8 @@ void UMetaverseAPIWrapper::InitializeAPIWrapper(const FString& apiUrl, const FSt
 {
     _apiUrl = apiUrl;
     _secret = secret;
-    GetNTFSRestCallback.AddDynamic(this, &UMetaverseAPIWrapper::OnGetNFTsResponseReceived);
-    GetNFTsByAddressCallback.AddDynamic(this, &UMetaverseAPIWrapper::OnGetNFTsByAddressResponseReceived);
-    GetModelMetadataByNftCallBack.AddDynamic(this, &UMetaverseAPIWrapper::OnGetModelMetadataByNftResponseReceived);;
+    
+    GetNTFSRestCallback.AddUniqueDynamic(this, &UMetaverseAPIWrapper::OnGetNFTsResponseReceived);
+    GetNFTsByAddressCallback.AddUniqueDynamic(this, &UMetaverseAPIWrapper::OnGetNFTsByAddressResponseReceived);
+    GetModelMetadataByNftCallBack.AddUniqueDynamic(this, &UMetaverseAPIWrapper::OnGetModelMetadataByNftResponseReceived);;
 }

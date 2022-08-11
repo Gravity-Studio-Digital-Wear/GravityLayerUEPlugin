@@ -22,6 +22,7 @@ public:
 
 	UMetaverseAPIWrapper();
 	UMetaverseAPIWrapper(FString apiUrl, FString secret);
+
 	virtual ~UMetaverseAPIWrapper();
 
 	void InitializeAPIWrapper(const FString& apiUrl, const FString& secret);
@@ -69,5 +70,8 @@ public:
 	FGetNFTResponseDataAsyncDelegate OnGetModelMetadataByNft;
 
 	FGetNFTResponseDataAsyncDelegate* GetOnNFTsByAddress();
+
+	FString GetApiUrl();
+	FString GetSecret();
 
 };

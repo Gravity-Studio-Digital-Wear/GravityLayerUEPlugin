@@ -38,18 +38,31 @@ private:
     bool initialized = false;
 
     TSharedPtr <FSdkConfiguration> SDKConf = nullptr;
-public:
+protected:
 
+
+    UPROPERTY(BlueprintReadOnly)
+    UMetaverseEntryPoint* GLMetaverseEntryPoint = nullptr;
+
+    /// <summary>
+    /// Cretes Metaverse Enty Points and registers for events
+    /// </summary>
+    void CreateMetaverseEntyPoint();
+
+    /// <summary>
+    /// Cretes Sdk configuration object with given parameters. 
+    /// </summary>
+    /// <param name="Account"></param>
+    /// <param name="ApiUrl"></param>
+    /// <param name="Secret"></param>
+    void ConfigureSDK(FString Account, FString ApiUrl, FString Secret);
+public:
 
     UGravityLayer();
 
     // Begin USubsystem
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
     virtual void Deinitialize() override;
-
-
-    UPROPERTY(BlueprintReadOnly)
-    UMetaverseEntryPoint* GLMetaverseEntryPoint = nullptr;
     
     /// <summary>
     /// Configures Gravity Layer plugin. Creates GLMetaverseEntryPoint object and registers to callbacks for Wardrobe and Stock response.
@@ -57,6 +70,12 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Gravity Layer")
     void Configure();
 
+    /// <summary>
+    /// Configures plugin with given parameters
+    /// </summary>
+    UFUNCTION(BlueprintCallable, Category = "Gravity Layer")
+    void ConfigureWithParams(FString Account, FString ApiUrl, FString Secret);
+   
     UFUNCTION(BlueprintCallable, Category = "Gravity Layer")
     bool IsInitialized();
 
@@ -75,7 +94,7 @@ public:
      * @brief Downloads Account's NFTs
      * @param Account 
      */
-    void GetUserInteroperableWearables(const FString& Account);
+    void GetUserInteroperableWearables(const FString& _account);
 
     /**
      * @brief Downloads NFT Models
@@ -146,4 +165,8 @@ public:
 
     USkeletalMeshComponent* AddSkeletalMeshComponent(AActor* targetActor);
 
+    FString GetAccountId();
+    FString GetApiUrl();
+    FString GetSecret();
+    UMetaverseEntryPoint* GetMetaverseEntryPoint();
 };

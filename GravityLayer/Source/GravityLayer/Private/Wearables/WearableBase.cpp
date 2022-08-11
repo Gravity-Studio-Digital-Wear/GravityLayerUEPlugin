@@ -13,6 +13,12 @@ void UWearableBase::SetWearableBase(FString title, FString modelUrl)
 	ModelUrl = modelUrl;
 }
 
+void UWearableBase::SetWearableBase(FString title, FString modelUrl, FString metaverseId)
+{
+	SetWearableBase(title, modelUrl);
+	MetaverseId = metaverseId;
+}
+
 UWearableBase::UWearableBase()
 {
 
@@ -32,9 +38,19 @@ UTexture2D* UWearableBase::GetPreviewImage()
 	return PreviewImage;
 }
 
+FString UWearableBase::GetMetaverseId()
+{
+	return MetaverseId;
+}
+
 FString UWearableBase::GetModelUrl()
 {
 	return ModelUrl;
+}
+
+void UWearableBase::SetPreviewImage(UTexture2D* image)
+{
+	PreviewImage = image;
 }
 
 void UWearableBase::DownloadPreviewImage(FString url)
@@ -48,5 +64,5 @@ void UWearableBase::OnGetImageResponseReceived(UVaRestRequestJSON* restRequest)
 {
 	OnImageDownloadedResponse.RemoveDynamic(this, &UWearableBase::OnGetImageResponseReceived);
 	TArray<uint8> ImageData = restRequest->GetResponseContent();
-	PreviewImage = FImageUtils::ImportBufferAsTexture2D(ImageData);
+	SetPreviewImage(FImageUtils::ImportBufferAsTexture2D(ImageData));
 }

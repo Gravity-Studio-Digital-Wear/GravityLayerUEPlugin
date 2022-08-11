@@ -1,5 +1,7 @@
 #include "Component\GravityLayerActorComponent.h"
 #include "GravityLayer.h"
+
+
 UGravityLayerActorComponent::UGravityLayerActorComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -16,7 +18,9 @@ void UGravityLayerActorComponent::BeginPlay()
 		OnWearableLoadedResponse.AddDynamic(this, &UGravityLayerActorComponent::GetModelRequestResponse);
 		if (GLSubSystem && IsValid(GLSubSystem)) 
 		{
-			GLSubSystem->GetNFTModel("0x2953399124f0cbb46d2cbacd8a89cf0599974963",
+			//75437324160650951662245703982020702172073797313123328702383515790577235918948 // rpm avatar
+			// 75437324160650951662245703982020702172073797313123328702383515791676747546724 // hoodie
+			GLSubSystem->GetNFTModel("0x2953399124F0cBB46d2CbACD8A89cF0599974963",
 				"75437324160650951662245703982020702172073797313123328702383515790577235918948", OnWearableLoadedResponse);
 		}
 	}
@@ -38,7 +42,8 @@ void UGravityLayerActorComponent::GetModelRequestResponse(UVaRestRequestJSON* Re
 {
 	OnWearableLoadedResponse.RemoveDynamic(this, &UGravityLayerActorComponent::GetModelRequestResponse);
 	UGravityLayer* GLSubSystem = GEngine->GetEngineSubsystem<UGravityLayer>();
-	glData = GLSubSystem->GetNTFModelData(Request->GetResponseContentAsString());
+	FString response = Request->GetResponseContentAsString();
+	glData = GLSubSystem->GetNTFModelData(response);
 	
 	UE_LOG(LogTemp, Warning, TEXT("UGravityLayerActorComponent::GetModelRequestResponse %d"), glData.Num());
 	LoadAssetFromUrl();

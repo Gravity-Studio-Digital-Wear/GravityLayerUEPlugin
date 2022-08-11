@@ -8,7 +8,7 @@ struct GRAVITYLAYER_API FSdkConfiguration
 	GENERATED_BODY();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity SDK COnf")
-	FString Account;
+	FString _account;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity SDK COnf")
 	FString _apiUrl;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity SDK COnf")

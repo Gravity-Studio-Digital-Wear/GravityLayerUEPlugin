@@ -11,11 +11,10 @@ class GRAVITYLAYER_API UStock : public UObject , public IStockInterface, public 
 {
 	GENERATED_BODY()
 private:
-
-	
 	UMetaverseAPIWrapper* _metaverseAPIWrapper;
 
 	void FillStockFromJsonString(FString jsonString);
+
 protected:
 
 	UPROPERTY(BlueprintReadOnly)
@@ -26,7 +25,13 @@ public:
 	virtual ~UStock();
 
 	void SetMetaverse(UMetaverseAPIWrapper* wrapper);
-	
+
+	void Add(UWearable* const wearable);
+	void Remove(UWearable* const wearable);
+	bool Contains(UWearable* const wearable);
+	int32_t lenght();
+
+	UMetaverseAPIWrapper* GetMetaverse();
 	
 	TArray<UWearable*>* GetWearables();
 
@@ -37,4 +42,6 @@ public:
 
 	UPROPERTY(BlueprintCallable, Category = "Gravity Layer|Event")
 	FOnStockUpdatedAsyncDelegate OnStockUpdated;
+
+
 };

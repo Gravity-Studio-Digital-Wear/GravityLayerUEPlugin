@@ -6,7 +6,7 @@
 
 
 UHTTPClient::UHTTPClient()
-	: UEngineSubsystem()
+	: UAHTTPCLient()
 {
 }
 
@@ -24,15 +24,7 @@ void UHTTPClient::CallURL(const FString& URL, const FString& jwt, const FString&
 {
 	UVaRestSubsystem* restSubSystem = GEngine->GetEngineSubsystem<UVaRestSubsystem>();
 	UVaRestJsonObject* VaRestJson = NewObject<UVaRestJsonObject>();
-	TMap<FString, FString> headerParameters;
-	if (jwt.Len() > 0)
-	{
-		headerParameters.Add("Authorization", "Bearer " + jwt);
-	}
-	if (secret.Len() > 0)
-	{
-		headerParameters.Add("api-key", secret);
-	}
+	TMap<FString, FString> headerParameters = CreateHeaderParameters(jwt, secret);
 	restSubSystem->CallURL(URL, headerParameters, EVaRestRequestVerb::GET, EVaRestRequestContentType::json, VaRestJson, Callback);
 }
 
@@ -43,4 +35,18 @@ void UHTTPClient::CallImageURL(const FString& URL, FVaRestCallDelegate& Callback
 	TMap<FString, FString> headerParameters;
 
 	restSubSystem->CallURL(URL, headerParameters, EVaRestRequestVerb::GET, EVaRestRequestContentType::binary, VaRestJson, Callback);
+}
+
+TMap<FString, FString> UHTTPClient::CreateHeaderParameters(const FString& jwt, const FString& secret)
+{
+	TMap<FString, FString> headerParameters;
+	if (jwt.Len() > 0)
+	{
+		headerParameters.Add("Authorization", "Bearer " + jwt);
+	}
+	if (secret.Len() > 0)
+	{
+		headerParameters.Add("api-key", secret);
+	}
+	return headerParameters;
 }

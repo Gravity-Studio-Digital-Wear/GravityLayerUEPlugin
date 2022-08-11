@@ -12,9 +12,11 @@
 
 void UMetaverseEntryPoint::SetMetaverseEntryPoint(const FString& apiUrl, const FString& secret)
 {
-
-    gLMetaverseAPIWrapper = NewObject<UMetaverseAPIWrapper>();
-    gLMetaverseAPIWrapper->AddToRoot();
+    if (!gLMetaverseAPIWrapper) 
+    {
+        gLMetaverseAPIWrapper = NewObject<UMetaverseAPIWrapper>();
+        gLMetaverseAPIWrapper->AddToRoot();
+    }
     if(apiUrl.IsEmpty())
         FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(TEXT("MetaverseEntryPoint apiUrl is empty.")));
 
@@ -23,19 +25,27 @@ void UMetaverseEntryPoint::SetMetaverseEntryPoint(const FString& apiUrl, const F
 
     gLMetaverseAPIWrapper->InitializeAPIWrapper(apiUrl, secret);
 
-    wardrobe = NewObject<UWardrobeByUser>();
-    wardrobe->AddToRoot();
+    if (!wardrobe) 
+    {
+        wardrobe = NewObject<UWardrobeByUser>();
+        wardrobe->AddToRoot();
+    }
     wardrobe->SetWardrobeByUser(gLMetaverseAPIWrapper);
 
-    stock = NewObject<UStock>();
-    stock->AddToRoot();
+    if (!stock) 
+    {
+        stock = NewObject<UStock>();
+        stock->AddToRoot();
+    }
+    
     stock->SetMetaverse(gLMetaverseAPIWrapper);
 
-    wearableServices = NewObject<UWearableServices>();
-    wearableServices->AddToRoot();
+    if (!wearableServices) 
+    {
+        wearableServices = NewObject<UWearableServices>();
+        wearableServices->AddToRoot();
+    }
     wearableServices->SetWearableServices(gLMetaverseAPIWrapper);
-    
-    UE_LOG(LogTemp, Warning, TEXT("MetaverseEntryPoint::MetaverseEntryPoint"));
 }
 
 UMetaverseEntryPoint::UMetaverseEntryPoint()
@@ -44,8 +54,6 @@ UMetaverseEntryPoint::UMetaverseEntryPoint()
 
 UMetaverseEntryPoint::~UMetaverseEntryPoint()
 {
-    UE_LOG(LogTemp, Warning, TEXT("UMetaverseEntryPoint::~UMetaverseEntryPoint"));
-
     if(!gLMetaverseAPIWrapper && IsValid(gLMetaverseAPIWrapper))
         gLMetaverseAPIWrapper->RemoveFromRoot();
 

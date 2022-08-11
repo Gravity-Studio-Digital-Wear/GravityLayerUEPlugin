@@ -22,7 +22,32 @@ UStock::UStock()
 void UStock::SetMetaverse(UMetaverseAPIWrapper* wrapper)
 {
     _metaverseAPIWrapper = wrapper;
-    _metaverseAPIWrapper->OnGetNFTs.AddDynamic(this, &UStock::GetAllInteroperableWearables);
+    _metaverseAPIWrapper->OnGetNFTs.AddUniqueDynamic(this, &UStock::GetAllInteroperableWearables);
+}
+
+void UStock::Add(UWearable* const wearable)
+{
+    Wearables.Add(wearable);
+}
+
+void UStock::Remove(UWearable* const wearable)
+{
+    Wearables.Remove(wearable);
+}
+
+bool UStock::Contains(UWearable* const wearable)
+{
+    return Wearables.Contains(wearable);
+}
+
+int32_t UStock::lenght()
+{
+    return Wearables.Num();
+}
+
+UMetaverseAPIWrapper* UStock::GetMetaverse()
+{
+    return _metaverseAPIWrapper;
 }
 
 UStock::~UStock()
@@ -37,17 +62,22 @@ void UStock::FetchAllInteroperableWearables()
 void UStock::GetAllInteroperableWearables(FString wearableData)
 {
     GetWearables()->Empty();
-    FWardrobeResult wResult;
     FString code = "{\"products\":" + wearableData + "}";
-    if (FJsonObjectConverter::JsonObjectStringToUStruct(code, &wResult, 0, 0)) 
+    FillStockFromJsonString(code);
+    OnStockUpdated.Broadcast();
+}
+
+void UStock::FillStockFromJsonString(FString jsonString)
+{
+    FWardrobeResult wResult;
+    if (FJsonObjectConverter::JsonObjectStringToUStruct(jsonString, &wResult, 0, 0))
     {
         FWardrobeData* Wdata = nullptr;
         for (int i = 0; i < wResult.products.Num(); ++i)
         {
             Wdata = &wResult.products[i];
-            if (Wdata->metadata.Num() > 0) 
+            if (Wdata->metadata.Num() > 0)
             {
-                
                 UWearableBase* m = NewObject<UWearableBase>();
                 m->SetWearableBase(Wdata->name, Wdata->metadata[0].modelUrl);
                 m->DownloadPreviewImage(Wdata->metadata[0].previewImage);
@@ -56,11 +86,4 @@ void UStock::GetAllInteroperableWearables(FString wearableData)
             }
         }
     }
-    OnStockUpdated.Broadcast();
-}
-
-void UStock::FillStockFromJsonString(FString jsonString)
-{
-   
-   
 }

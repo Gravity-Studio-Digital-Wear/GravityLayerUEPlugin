@@ -10,7 +10,6 @@ class UWearableInferface : public UInterface
 	GENERATED_BODY()
 };
 
-
 class IWearableInferface
 {
 	 GENERATED_BODY()

@@ -15,6 +15,7 @@ class GRAVITYLAYER_API UWardrobeByUser : public UObject, public IWardrobe
 public:
 	UWardrobeByUser();
 	void SetWardrobeByUser(IFetchWearablesByAddress* APIWrapper);
+
 	virtual ~UWardrobeByUser();
 
 	void FetchInteroperableWearables(FString address);
@@ -26,9 +27,12 @@ public:
 	UPROPERTY(BlueprintCallable, Category = "Gravity Layer|Event")
 	FOnStockUpdatedAsyncDelegate OnWardrobeUpdated;
 
+	void Add(UWearable* const wearable);
+	void Remove(UWearable* const wearable);
+	bool Contains(UWearable* const wearable);
+	int32_t lenght();
+
 protected:
 	IFetchWearablesByAddress* _APIWrapper;
 	TArray<UWearable*> Wearables;
-	
-	
 };
